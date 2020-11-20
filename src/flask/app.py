@@ -127,84 +127,73 @@ class Flask(Scaffold):
                           程序的root_path,或绝对路径.默认为static
     :param static_host: 添加静态路由时要使用的主机.默认为None.在配置了
                         static_folder后，使用host_matching=True之后必需。
-        Defaults to None. Required when using ``host_matching=True``
-        with a ``static_folder`` configured.
-    :param host_matching: set ``url_map.host_matching`` attribute.
-        Defaults to False.
-    :param subdomain_matching: consider the subdomain relative to
-        :data:`SERVER_NAME` when matching routes. Defaults to False.
-    :param template_folder: the folder that contains the templates that should
-                            be used by the application.  Defaults to
-                            ``'templates'`` folder in the root path of the
-                            application.
-    :param instance_path: An alternative instance path for the application.
-                          By default the folder ``'instance'`` next to the
-                          package or module is assumed to be the instance
-                          path.
-    :param instance_relative_config: if set to ``True`` relative filenames
-                                     for loading the config are assumed to
-                                     be relative to the instance path instead
-                                     of the application root.
-    :param root_path: The path to the root of the application files.
-        This should only be set manually when it can't be detected
-        automatically, such as for namespace packages.
+    :param host_matching: 设置url.map.host_matching参数，默认为False
+    :param subdomain_matching: 当匹配routes时，考虑与SERVER_NAME的相关的子域，
+                               默认为False   
+    :param template_folder: 包含应用程序所使用的模板的文件夹.默认为应用程序根目
+                            录下的templates文件夹                     
+    :param instance_path: 应用程序的替代实例路径.默认情况下，包或模块旁边的文件
+                          夹instance被假定为实例
+    :param instance_relative_config: 如果设置为TRUE，则假设用于加载配置的相对文
+                                     件名相对于实例路径，而不是应用程序根目录
+    :param root_path: 应用程序文件的根目录路径The path to the root of the application files.
+        只有不能被自动检测到的时候，才应该手动设置它，比如namespace包
     """
 
-    #: The class that is used for request objects.  See :class:`~flask.Request`
-    #: for more information.
+    #: 用于请求对象的类
+    #: 有关更多信息，请参阅flask.Request
     request_class = Request
 
-    #: The class that is used for response objects.  See
-    #: :class:`~flask.Response` for more information.
+    #: 用于相应对象的类  
+    #: 有关更多信息，请参阅flask.Response
     response_class = Response
 
-    #: The class that is used for the Jinja environment.
+    #: 用于jinjia环境设置的类
     #:
-    #: .. versionadded:: 0.11
+    #: .. 版本添加:: 0.11
     jinja_environment = Environment
 
-    #: The class that is used for the :data:`~flask.g` instance.
+    #: 用于flask.g实例的类.
     #:
-    #: Example use cases for a custom class:
+    #: 自定义类的示例用例:
     #:
-    #: 1. Store arbitrary attributes on flask.g.
-    #: 2. Add a property for lazy per-request database connectors.
-    #: 3. Return None instead of AttributeError on unexpected attributes.
-    #: 4. Raise exception if an unexpected attr is set, a "controlled" flask.g.
+    #: 1. 将任意属性存储在flask.g.
+    #: 2. 为每个请求的惰性数据库连接器添加一个属性.
+    #: 3. 对意外的属性返回None而不是AttributeError
+    #: 4. 如果设置了异常参数，则引发异常，一种可控的flask.g.
     #:
-    #: In Flask 0.9 this property was called `request_globals_class` but it
-    #: was changed in 0.10 to :attr:`app_ctx_globals_class` because the
-    #: flask.g object is now application context scoped.
+    #: 在Flask 0.9，这个属性叫做request_globals_class，但在1.0版本中被 
+    #: 改成了app_ctx_globals_class。因为flask.g对象现在是应用于程序上下  
+    #: 文域
     #:
-    #: .. versionadded:: 0.10
+    #: .. 版本添加:: 0.10
     app_ctx_globals_class = _AppCtxGlobals
 
-    #: The class that is used for the ``config`` attribute of this app.
-    #: Defaults to :class:`~flask.Config`.
+    #: 用于应用程序config属性的类.
+    #: 默认为flask.Config.
     #:
-    #: Example use cases for a custom class:
+    #: 自定义类的示例用例:
     #:
-    #: 1. Default values for certain config options.
-    #: 2. Access to config values through attributes in addition to keys.
+    #: 1. 某些配置选项的默认值.
+    #: 2. 通过键以外的属性访问配置值.
     #:
-    #: .. versionadded:: 0.11
+    #: .. 版本添加:: 0.11
     config_class = Config
 
-    #: The testing flag.  Set this to ``True`` to enable the test mode of
-    #: Flask extensions (and in the future probably also Flask itself).
-    #: For example this might activate test helpers that have an
-    #: additional runtime cost which should not be enabled by default.
+    #: 测试标志位.将其设置为True以启用Flask拓展(将来有可能是Flask本身)的  
+    #: 测试模式.
+    #: 例如，这可能会激活具有额外运行时成本的测试帮助程序，而在默认情况下。
+    #: 不应该启用这些程序
     #:
-    #: If this is enabled and PROPAGATE_EXCEPTIONS is not changed from the
-    #: default it's implicitly enabled.
+    #: 如果启用了该选项，并且没有从缺省值更改PROPAGATE_EXCEPTIONS，则隐式
+    #: 启用该选项。
     #:
-    #: This attribute can also be configured from the config with the
-    #: ``TESTING`` configuration key.  Defaults to ``False``.
+    #: 这个属性也可以在配置中以TESTING的选项关键字配置。默认为Flase。
+    #: 
     testing = ConfigAttribute("TESTING")
 
-    #: If a secret key is set, cryptographic components can use this to
-    #: sign cookies and other things. Set this to a complex random value
-    #: when you want to use the secure cookie for instance.
+    #: 如果设置了密钥，加密组件可以使用它来签名cookies和其内容。如果您想为
+    #: 实例使用安全的cookies，请设置它为一个复杂的随机值.
     #:
     #: This attribute can also be configured from the config with the
     #: :data:`SECRET_KEY` configuration key. Defaults to ``None``.
