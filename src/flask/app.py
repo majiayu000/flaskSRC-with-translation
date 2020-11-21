@@ -195,11 +195,11 @@ class Flask(Scaffold):
     #: 如果设置了密钥，加密组件可以使用它来签名cookies和其内容。如果您想为
     #: 实例使用安全的cookies，请设置它为一个复杂的随机值.
     #:
-    #: This attribute can also be configured from the config with the
-    #: :data:`SECRET_KEY` configuration key. Defaults to ``None``.
+    #: 也可以使用SECRET_KEY关键字从配置中配置此属性，默认为None。
+    #: 
     secret_key = ConfigAttribute("SECRET_KEY")
 
-    #: The secure cookie uses this for the name of the session cookie.
+    #: 安全cookies使用它作为会话cookies的名称
     #:
     #: This attribute can also be configured from the config with the
     #: ``SESSION_COOKIE_NAME`` configuration key.  Defaults to ``'session'``
