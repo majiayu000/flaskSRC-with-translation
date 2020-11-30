@@ -371,68 +371,68 @@ class Flask(Scaffold):
                 " A relative path was given instead."
             )
 
-        #: Holds the path to the instance folder.
+        #: 保存实例文件的文件夹路径.
         #:
         #: .. versionadded:: 0.8
         self.instance_path = instance_path
 
-        #: The configuration dictionary as :class:`Config`.  This behaves
-        #: exactly like a regular dictionary but supports additional methods
-        #: to load a config from files.
+        #: 配置字典为`Config`类.它的行为完全像是一个普通字典，却支持额外的从
+        #: 文件载入配置的方法.
+        #: 
         self.config = self.make_config(instance_relative_config)
 
-        #: A list of functions that are called when :meth:`url_for` raises a
-        #: :exc:`~werkzeug.routing.BuildError`.  Each function registered here
-        #: is called with `error`, `endpoint` and `values`.  If a function
-        #: returns ``None`` or raises a :exc:`BuildError` the next function is
-        #: tried.
+        #: 当`url_for`引发`~werkzeug.routing.BuildError`错误时所调用的函数列表.
+        #: 在这里注册的每个函数都以`error`, `endpoint` 和`values`调用. 
+        #: 如果一个函数返回'None'或者引起一个`BuildError`，下一个函数将会尝试.
+        #: 
+        #: 
         #:
         #: .. versionadded:: 0.9
         self.url_build_error_handlers = []
 
-        #: A list of functions that will be called at the beginning of the
-        #: first request to this instance. To register a function, use the
-        #: :meth:`before_first_request` decorator.
+        #: 此实例第一个请求开始时所调用的函数列表.
+        #: 要注册函数，请使用`before_first_request`装饰符.
+        #: 
         #:
         #: .. versionadded:: 0.8
         self.before_first_request_funcs = []
 
-        #: A list of functions that are called when the application context
-        #: is destroyed.  Since the application context is also torn down
-        #: if the request ends this is the place to store code that disconnects
-        #: from databases.
+        #: 应用程序上下文销毁时所调用的函数列表.
+        #: 由于在请求结束时，应用程序上下文也会被销毁，所以这里也用来存放断开
+        #: 数据库连接的代码.
+        #: 
         #:
         #: .. versionadded:: 0.9
         self.teardown_appcontext_funcs = []
 
-        #: A list of shell context processor functions that should be run
-        #: when a shell context is created.
+        #: 当一个shell上下文创建时应该运行的shell上下文处理程序函数列表. 
+        #: 
         #:
         #: .. versionadded:: 0.11
         self.shell_context_processors = []
 
-        #: all the attached blueprints in a dictionary by name.  Blueprints
-        #: can be attached multiple times so this dictionary does not tell
-        #: you how often they got attached.
+        #: 字典中按名称列出的所有附属蓝图. 蓝图可以被多次附加所以这个字典不能
+        #: 告诉您多久他们被附加一次（频率）.
+        #: 
         #:
         #: .. versionadded:: 0.7
         self.blueprints = {}
         self._blueprint_order = []
 
-        #: a place where extensions can store application specific state.  For
-        #: example this is where an extension could store database engines and
-        #: similar things.
+        #: 扩展可以存储应用程序特定状态的地方. 
+        #: 例如,拓展可以在这里存放数据库引擎和类似的东西.
+        #: 
         #:
-        #: The key must match the name of the extension module. For example in
-        #: case of a "Flask-Foo" extension in `flask_foo`, the key would be
-        #: ``'foo'``.
+        #: 关键字必须和拓展模块的名称匹配. 
+        #: 例如,对于`flask_foo`拓展中的"Flask-Foo" 关键字应该为'foo'.
+        #: 
         #:
         #: .. versionadded:: 0.7
         self.extensions = {}
 
-        #: The :class:`~werkzeug.routing.Map` for this instance.  You can use
-        #: this to change the routing converters after the class was created
-        #: but before any routes are connected.  Example::
+        #: `~werkzeug.routing.Map`类的实例.您可以在创建类之后，在任何路由连接
+        #: 之前，使用它来更改路由转换器。
+        #: Example::
         #:
         #:    from werkzeug.routing import BaseConverter
         #:
@@ -450,16 +450,16 @@ class Flask(Scaffold):
         self.url_map.host_matching = host_matching
         self.subdomain_matching = subdomain_matching
 
-        # tracks internally if the application already handled at least one
-        # request.
+        # 在内部跟着应用程序是否已经处理了至少一个请求.
+        # 
         self._got_first_request = False
         self._before_request_lock = Lock()
 
-        # Add a static route using the provided static_url_path, static_host,
-        # and static_folder if there is a configured static_folder.
-        # Note we do this without checking if static_folder exists.
-        # For one, it might be created while the server is running (e.g. during
-        # development). Also, Google App Engine stores static files somewhere
+        # 如果由配置static_folder,则使用提供的static_url_path,static_host,
+        # static_folder配置静态路由   
+        # 请注意，我们这样做是在不检查static_folder是否存在的情况下进行的.
+        # 例如，它可能是在服务器运行的时候创建的（例如开发）。
+        # 另外，谷歌应用引擎将静态文件存储在某处.
         if self.has_static_folder:
             assert (
                 bool(static_host) == host_matching
@@ -474,8 +474,8 @@ class Flask(Scaffold):
                 view_func=lambda **kw: self_ref().send_static_file(**kw),
             )
 
-        # Set the name of the Click group in case someone wants to add
-        # the app's commands to another CLI tool.
+        # 设置Clkck组的名称，以防有人想要将应用程序的命令添加到另一个CLI工具。
+        #
         self.cli.name = self.name
 
     def _is_setup_finished(self):
@@ -483,11 +483,10 @@ class Flask(Scaffold):
 
     @locked_cached_property
     def name(self):
-        """The name of the application.  This is usually the import name
-        with the difference that it's guessed from the run file if the
-        import name is main.  This name is used as a display name when
-        Flask needs the name of the application.  It can be set and overridden
-        to change the value.
+        """应用程序名称.这通常是导入名称，不同之处在于如果导入名称为main，
+        则从运行文件中猜测它。这个名称被用作显示名称当Flask需要应用程序的名称时.
+        可以被设置和覆盖来改变它的值.
+        
 
         .. versionadded:: 0.8
         """
@@ -500,8 +499,7 @@ class Flask(Scaffold):
 
     @property
     def propagate_exceptions(self):
-        """Returns the value of the ``PROPAGATE_EXCEPTIONS`` configuration
-        value in case it's set, otherwise a sensible default is returned.
+        """如果配置过，返回``PROPAGATE_EXCEPTIONS``配置的值，否则返回合理的默认值. 
 
         .. versionadded:: 0.7
         """
@@ -512,9 +510,9 @@ class Flask(Scaffold):
 
     @property
     def preserve_context_on_exception(self):
-        """Returns the value of the ``PRESERVE_CONTEXT_ON_EXCEPTION``
-        configuration value in case it's set, otherwise a sensible default
-        is returned.
+        """如果设置过，返回``PRESERVE_CONTEXT_ON_EXCEPTION``配置值，否则返回合
+        理的默认值. 
+        
 
         .. versionadded:: 0.7
         """
@@ -525,26 +523,22 @@ class Flask(Scaffold):
 
     @locked_cached_property
     def logger(self):
-        """A standard Python :class:`~logging.Logger` for the app, with
-        the same name as :attr:`name`.
+        """一个标准python类`~logging.Logger`对于应用程序,与参数`name`有相同名称.
+        
 
-        In debug mode, the logger's :attr:`~logging.Logger.level` will
-        be set to :data:`~logging.DEBUG`.
+        在debug模式下, 日志的参数`~logging.Logger.level` 将会设置为`~logging.DEBUG`.
 
-        If there are no handlers configured, a default handler will be
-        added. See :doc:`/logging` for more information.
+        如果未配置任何处理程序，则添加默认处理程序为.有关更多信息，请参见`/logging`.
 
         .. versionchanged:: 1.1.0
             The logger takes the same name as :attr:`name` rather than
             hard-coding ``"flask.app"``.
 
         .. versionchanged:: 1.0.0
-            Behavior was simplified. The logger is always named
-            ``"flask.app"``. The level is only set during configuration,
-            it doesn't check ``app.debug`` each time. Only one format is
-            used, not different ones depending on ``app.debug``. No
-            handlers are removed, and a handler is only added if no
-            handlers are already configured.
+            行为是简化过的. 记录器总是命名为"flask.app".仅在配置期间设置级别，而不会
+            每次都检查`app.debug`.只使用一种格式，而不是根据`app.debug`设置不同格式.
+            不删除任何处理程序，并且只在没有配置处理程序时添加处理程序
+            
 
         .. versionadded:: 0.3
         """
@@ -552,9 +546,9 @@ class Flask(Scaffold):
 
     @locked_cached_property
     def jinja_env(self):
-        """The Jinja environment used to load templates.
+        """用于加载模板的Jinja环境.
 
-        The environment is created the first time this property is
+        环境在第一次访问此属性时创建.The environment is created the first time this property is
         accessed. Changing :attr:`jinja_options` after that will have no
         effect.
         """
