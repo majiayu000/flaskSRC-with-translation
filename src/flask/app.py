@@ -195,73 +195,73 @@ class Flask(Scaffold):
     #: 如果设置了密钥，加密组件可以使用它来签名cookies和其内容。如果您想为
     #: 实例使用安全的cookies，请设置它为一个复杂的随机值.
     #:
-    #: 也可以使用SECRET_KEY关键字从配置中配置此属性，默认为None。
+    #: 也可以使用"SECRET_KEY"关键字从配置中配置此属性，默认为None。
     #: 
     secret_key = ConfigAttribute("SECRET_KEY")
 
     #: 安全cookies使用它作为会话cookies的名称
     #:
-    #: This attribute can also be configured from the config with the
-    #: ``SESSION_COOKIE_NAME`` configuration key.  Defaults to ``'session'``
+    #: 也可以使用"SESSION_COOKIE_NAME"关键字从配置中配置此属性，
+    #: 默认为"session"
     session_cookie_name = ConfigAttribute("SESSION_COOKIE_NAME")
 
-    #: A :class:`~datetime.timedelta` which is used to set the expiration
-    #: date of a permanent session.  The default is 31 days which makes a
-    #: permanent session survive for roughly one month.
+    #: 用于设置永久会话的过期日期的类`~datetime.timedelta`
+    #: 默认为31天，永久会话大概可以生存31天 
+    #: 
     #:
-    #: This attribute can also be configured from the config with the
-    #: ``PERMANENT_SESSION_LIFETIME`` configuration key.  Defaults to
-    #: ``timedelta(days=31)``
+    #: 也可以使用"PERMANENT_SESSION_LIFETIME"关键字从配置中配置此属性，This attribute can also be configured from the config with the
+    #: 默认为timedelta(days=31)。
+    #: 
     permanent_session_lifetime = ConfigAttribute(
         "PERMANENT_SESSION_LIFETIME", get_converter=_make_timedelta
     )
 
-    #: A :class:`~datetime.timedelta` or number of seconds which is used
-    #: as the default ``max_age`` for :func:`send_file`. The default is
-    #: ``None``, which tells the browser to use conditional requests
-    #: instead of a timed cache.
+    #: `~datetime.timedelta`类或者用于函数send_file的默认max_age秒数，
+    #: 默认为None，告诉浏览器使用条件请求而不是定时缓存
+    #: 
+    #: 
     #:
-    #: Configured with the :data:`SEND_FILE_MAX_AGE_DEFAULT`
-    #: configuration key.
+    #: 使用"SEND_FILE_MAX_AGE_DEFAULT"关键字配置
+    #: 
     #:
-    #: .. versionchanged:: 2.0
-    #:     Defaults to ``None`` instead of 12 hours.
+    #: .. 版本更新:: 2.0
+    #:     默认为None而不是12小时
     send_file_max_age_default = ConfigAttribute(
         "SEND_FILE_MAX_AGE_DEFAULT", get_converter=_make_timedelta
     )
 
-    #: Enable this if you want to use the X-Sendfile feature.  Keep in
-    #: mind that the server has to support this.  This only affects files
-    #: sent with the :func:`send_file` method.
+    #: 如果要使用X-Sendfile的功能，请启用这个.请注意服务器必须支持这一点。 
+    #: 此功能仅影响通过send_file方法发送的文件
+    #: 
     #:
     #: .. versionadded:: 0.2
     #:
-    #: This attribute can also be configured from the config with the
-    #: ``USE_X_SENDFILE`` configuration key.  Defaults to ``False``.
+    #: 也可以使用"USE_X_SENDFILE"关键字配置此属性。默认为False
+    #: 
     use_x_sendfile = ConfigAttribute("USE_X_SENDFILE")
 
-    #: The JSON encoder class to use.  Defaults to :class:`~flask.json.JSONEncoder`.
+    #: 要使用的JSON编码器类.默认为类"~flask.json.JSONEncoder" 
     #:
     #: .. versionadded:: 0.10
     json_encoder = json.JSONEncoder
 
-    #: The JSON decoder class to use.  Defaults to :class:`~flask.json.JSONDecoder`.
+    #: 要使用的JSON解码器类.默认为类"~flask.json.JSONDecoder".
     #:
     #: .. versionadded:: 0.10
     json_decoder = json.JSONDecoder
 
-    #: Options that are passed to the Jinja environment in
-    #: :meth:`create_jinja_environment`. Changing these options after
-    #: the environment is created (accessing :attr:`jinja_env`) will
-    #: have no effect.
+    #: 通过`create_jinja_environment`方法传递给Jinja环境的选项.
+    #: 在环境创建后（通过jiaja_env）修改这些选项不会生效. 
+    #: 
+    #: 
     #:
     #: .. versionchanged:: 1.1.0
-    #:     This is a ``dict`` instead of an ``ImmutableDict`` to allow
-    #:     easier configuration.
+    #:     从不可变字典变可变字典以允许更容易地配置.
+    #:     
     #:
     jinja_options = {"extensions": ["jinja2.ext.autoescape", "jinja2.ext.with_"]}
 
-    #: Default configuration parameters.
+    #: 默认配置参数.
     default_config = ImmutableDict(
         {
             "ENV": None,
@@ -296,50 +296,50 @@ class Flask(Scaffold):
         }
     )
 
-    #: The rule object to use for URL rules created.  This is used by
-    #: :meth:`add_url_rule`.  Defaults to :class:`werkzeug.routing.Rule`.
+    #: 用于创建URL规则的规则对象.通过`add_url_rule`方法使用.
+    #: 默认为`werkzeug.routing.Rule`.
     #:
     #: .. versionadded:: 0.7
     url_rule_class = Rule
 
-    #: The map object to use for storing the URL rules and routing
-    #: configuration parameters. Defaults to :class:`werkzeug.routing.Map`.
+    #: 存储URL规则和路径设置参数的映射对象.
+    #: 默认为`werkzeug.routing.Map`.
     #:
     #: .. versionadded:: 1.1.0
     url_map_class = Map
 
-    #: the test client that is used with when `test_client` is used.
+    #: 使用'test_client'时的测试客户端
     #:
     #: .. versionadded:: 0.7
     test_client_class = None
 
-    #: The :class:`~click.testing.CliRunner` subclass, by default
-    #: :class:`~flask.testing.FlaskCliRunner` that is used by
-    #: :meth:`test_cli_runner`. Its ``__init__`` method should take a
-    #: Flask app object as the first argument.
+    #: `~click.testing.CliRunner`的子类,默认情况下由`test_cli_runner`方 
+    #: 法使用的`~flask.testing.FlaskCliRunner`类.他的'__init__'方法应该将
+    #: Flask程序对象作为第一个参数
+    #:
     #:
     #: .. versionadded:: 1.0
     test_cli_runner_class = None
 
-    #: the session interface to use.  By default an instance of
-    #: :class:`~flask.sessions.SecureCookieSessionInterface` is used here.
+    #: 使用的会话接口.默认为此处使用的
+    #: `~flask.sessions.SecureCookieSessionInterface`类的一个实例.
     #:
     #: .. versionadded:: 0.8
     session_interface = SecureCookieSessionInterface()
 
-    # TODO remove the next three attrs when Sphinx :inherited-members: works
+    # TODO 删除以下三个参数当Sphinx的继承成员运行时
     # https://github.com/sphinx-doc/sphinx/issues/741
 
-    #: The name of the package or module that this app belongs to. Do not
-    #: change this once it is set by the constructor.
+    #: 此应用程序所属的程序包或模块的名称. 
+    #: 一旦构造函数设置了它，请不要更改它.
     import_name = None
 
-    #: Location of the template files to be added to the template lookup.
-    #: ``None`` if templates should not be added.
+    #: 要添加到模板查找中的模板文件的位置.
+    #: 如果不应该添加模板则为None.
     template_folder = None
 
-    #: Absolute path to the package on the filesystem. Used to look up
-    #: resources contained in the package.
+    #: 文件系统上软件包的绝对路径. 
+    #: 用于查找包中包含的资源.
     root_path = None
 
     def __init__(
