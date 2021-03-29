@@ -727,10 +727,10 @@ class Flask(Scaffold):
         通过``FLASK_DEBUG``环境变量进行覆盖. 
         如果在代码中设置，可能不会像预期的那样行为.
 
-        **Do not enable debug mode when deploying in production.**
+        **在生产环境中部署时不要启用调试模式.**
 
-        Default: ``True`` if :attr:`env` is ``'development'``, or
-        ``False`` otherwise.
+        默认值：True，如果：attr：`env`是'development'，否则为``False''
+        
         """
         return self.config["DEBUG"]
 
@@ -740,56 +740,50 @@ class Flask(Scaffold):
         self.jinja_env.auto_reload = self.templates_auto_reload
 
     def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
-        """Runs the application on a local development server.
+        """在本地开发服务器上运行应用程序.
 
-        Do not use ``run()`` in a production setting. It is not intended to
-        meet security and performance requirements for a production server.
-        Instead, see :doc:`/deploying/index` for WSGI server recommendations.
+        不要在生产设置中使用``run（）``. 
+        不旨在满足生产服务器的安全性和性能要求.
+        相反，请参阅doc：`/ deploying / index`以获取WSGI服务器建议.
 
-        If the :attr:`debug` flag is set the server will automatically reload
-        for code changes and show a debugger in case an exception happened.
+        如果参数`debug` 标志已设置，服务器将会自动重载当
+        进行代码更改时并在发生异常的情况下显示调试器.
 
-        If you want to run the application in debug mode, but disable the
-        code execution on the interactive debugger, you can pass
-        ``use_evalex=False`` as parameter.  This will keep the debugger's
-        traceback screen active, but disable code execution.
+        如果要在调试模式下运行应用程序, 但禁用在交互式调试器上执行代码, 
+        你可以传递
+        ``use_evalex=False`` 作为参数.  
+        这将保留调试器的追溯屏幕处于活动状态,但是禁用代码执行.
 
-        It is not recommended to use this function for development with
-        automatic reloading as this is badly supported.  Instead you should
-        be using the :command:`flask` command line script's ``run`` support.
+        不建议使用此功能进行开发自动重新加载，因为此功能支持很差.  
+        相反你应该使用Flask命令行脚本的run支持。
+        
 
-        .. admonition:: Keep in Mind
+        .. 警告:: 记住
 
-           Flask will suppress any server error with a generic error page
-           unless it is in debug mode.  As such to enable just the
-           interactive debugger without the code reloading, you have to
-           invoke :meth:`run` with ``debug=True`` and ``use_reloader=False``.
-           Setting ``use_debugger`` to ``True`` without being in debug mode
-           won't catch any exceptions because there won't be any to
-           catch.
+           Flask将通过通用错误页面抑制任何服务器错误除非它处于调试模式.  
+           因此，仅启用无需代码重新加载的交互式调试器, 
+           你必须调用带``debug=True``和 ``use_reloader=False``的run方法.
+           不在调试模式设置 ``use_debugger`` 为 ``True`` 
+           不会捕获任何异常，因为不会有任何捕获.
 
-        :param host: the hostname to listen on. Set this to ``'0.0.0.0'`` to
-            have the server available externally as well. Defaults to
-            ``'127.0.0.1'`` or the host in the ``SERVER_NAME`` config variable
-            if present.
-        :param port: the port of the webserver. Defaults to ``5000`` or the
-            port defined in the ``SERVER_NAME`` config variable if present.
-        :param debug: if given, enable or disable debug mode. See
+        :param host: 要监听的主机名. 设置为 ``'0.0.0.0'`` 来
+            使服务器在外部可用. 
+            默认为``'127.0.0.1'`` 或者 ``SERVER_NAME`` 配置变量
+            如果有的话.
+        :param port: Web服务器的端口. 默认为 ``5000`` 或者
+            端口定义在 ``SERVER_NAME`` 配置变量中如果有.
+        :param debug: 如果给定，则启用或禁用调试模式. 参考
             :attr:`debug`.
-        :param load_dotenv: Load the nearest :file:`.env` and :file:`.flaskenv`
-            files to set environment variables. Will also change the working
-            directory to the directory containing the first file found.
-        :param options: the options to be forwarded to the underlying Werkzeug
-            server. See :func:`werkzeug.serving.run_simple` for more
-            information.
+        :param load_dotenv: 加载最近的.env和.flaskenv设置环境变量的文件. 
+            也会改变工作目录为包含找到的第一个文件的目录.
+        :param options: 将要转发给基础Werkzeug服务器的选项. 
+            参考函数`werkzeug.serving.run_simple` 获取更多信息.
 
         .. versionchanged:: 1.0
-            If installed, python-dotenv will be used to load environment
-            variables from :file:`.env` and :file:`.flaskenv` files.
+            如果已安装, python-dotenv将用于从文件.env和.flaskenv加载环境变量.
 
-            If set, the :envvar:`FLASK_ENV` and :envvar:`FLASK_DEBUG`
-            environment variables will override :attr:`env` and
-            :attr:`debug`.
+            如果已设置,环境变量`FLASK_ENV`和`FLASK_DEBUG`
+            将会覆盖`env`和`debug`.
 
             Threaded mode is enabled by default.
 
@@ -797,8 +791,8 @@ class Flask(Scaffold):
             The default port is now picked from the ``SERVER_NAME``
             variable.
         """
-        # Change this into a no-op if the server is invoked from the
-        # command line. Have a look at cli.py for more information.
+        # 请将其更改为无操作如果服务器从命令行调用.
+        # 请查看cli.py了解更多信息.
         if os.environ.get("FLASK_RUN_FROM_CLI") == "true":
             from .debughelpers import explain_ignored_app_run
 
