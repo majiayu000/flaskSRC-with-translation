@@ -548,27 +548,23 @@ class Flask(Scaffold):
     def jinja_env(self):
         """用于加载模板的Jinja环境.
 
-        环境在第一次访问此属性时创建.The environment is created the first time this property is
-        accessed. Changing :attr:`jinja_options` after that will have no
-        effect.
+        环境在第一次访问此属性时创建.改变属性`jinja_options`后不再生效.
         """
         return self.create_jinja_environment()
 
     @property
     def got_first_request(self):
-        """This attribute is set to ``True`` if the application started
-        handling the first request.
-
+        """本属性设置为 `True`如果应用开始接收第一个请求
         .. versionadded:: 0.8
         """
         return self._got_first_request
 
     def make_config(self, instance_relative=False):
-        """Used to create the config attribute by the Flask constructor.
-        The `instance_relative` parameter is passed in from the constructor
-        of Flask (there named `instance_relative_config`) and indicates if
-        the config should be relative to the instance path or the root path
-        of the application.
+        """用于由Flask构造函数创建config属性.
+        `instance_relative` 参数是从Flask构造函数传入的这里叫 `instance_relative_config`) 
+        并指出是否配置应该相对于应用程序的实例路径或根路径
+
+
 
         .. versionadded:: 0.8
         """
@@ -581,10 +577,9 @@ class Flask(Scaffold):
         return self.config_class(root_path, defaults)
 
     def auto_find_instance_path(self):
-        """Tries to locate the instance path if it was not provided to the
-        constructor of the application class.  It will basically calculate
-        the path to a folder named ``instance`` next to your main file or
-        the package.
+        """尝试查找实例路径如果它未提供给实例路径应用程序类的构造函数.  
+        它基本上会计算主文件旁边的名为``instance''的文件夹的路径或包
+        
 
         .. versionadded:: 0.8
         """
@@ -594,28 +589,25 @@ class Flask(Scaffold):
         return os.path.join(prefix, "var", f"{self.name}-instance")
 
     def open_instance_resource(self, resource, mode="rb"):
-        """Opens a resource from the application's instance folder
-        (:attr:`instance_path`).  Otherwise works like
-        :meth:`open_resource`.  Instance resources can also be opened for
-        writing.
+        """从应用程序的实例文件夹中打开资源
+        (:attr:`instance_path`).  否则像
+        :meth:`open_resource`. 实例资源也可以为了写入打开.
 
-        :param resource: the name of the resource.  To access resources within
-                         subfolders use forward slashes as separator.
-        :param mode: resource file opening mode, default is 'rb'.
+        :param resource: 资源名.  访问其中的资源子文件夹，使用正斜杠作为分隔符.
+        :param mode: 资源文件打开模式，默认为 'rb'.
         """
         return open(os.path.join(self.instance_path, resource), mode)
 
     @property
     def templates_auto_reload(self):
-        """Reload templates when they are changed. Used by
+        """更改模板时重新加载模板. 用于
         :meth:`create_jinja_environment`.
 
-        This attribute can be configured with :data:`TEMPLATES_AUTO_RELOAD`. If
-        not set, it will be enabled in debug mode.
+        可以使用以下方式配置此属性:data:`TEMPLATES_AUTO_RELOAD`.
+        如果未设置，它将在调试模式下启用.
 
         .. versionadded:: 1.0
-            This property was added but the underlying config and behavior
-            already existed.
+            添加了此属性，但基础配置和行为已经存在.
         """
         rv = self.config["TEMPLATES_AUTO_RELOAD"]
         return rv if rv is not None else self.debug
@@ -625,14 +617,13 @@ class Flask(Scaffold):
         self.config["TEMPLATES_AUTO_RELOAD"] = value
 
     def create_jinja_environment(self):
-        """Create the Jinja environment based on :attr:`jinja_options`
-        and the various Jinja-related methods of the app. Changing
-        :attr:`jinja_options` after this will have no effect. Also adds
-        Flask-related globals and filters to the environment.
+        """创建基于`jinja_options`的Jinja环境以及该应用程序
+        的各种与Jinja相关的方法. 在创建之后改变参数`jinja_options`不会生效. 
+        还向环境添加Flask相关的全局变量和过滤器.
 
         .. versionchanged:: 0.11
-           ``Environment.auto_reload`` set in accordance with
-           ``TEMPLATES_AUTO_RELOAD`` configuration option.
+           ``Environment.auto_reload`` 可依据
+           ``TEMPLATES_AUTO_RELOAD`` 配置选项来进行设置.
 
         .. versionadded:: 0.5
         """
@@ -649,9 +640,9 @@ class Flask(Scaffold):
             url_for=url_for,
             get_flashed_messages=get_flashed_messages,
             config=self.config,
-            # request, session and g are normally added with the
-            # context processor for efficiency reasons but for imported
-            # templates we also want the proxies in there.
+            # 出于效率考虑，request、session和g通常是与上下文处理
+            # 器一起添加的，但对于导入的模板，我们也希望在其中添
+            # 加代理
             request=request,
             session=session,
             g=g,
@@ -660,21 +651,20 @@ class Flask(Scaffold):
         return rv
 
     def create_global_jinja_loader(self):
-        """Creates the loader for the Jinja2 environment.  Can be used to
-        override just the loader and keeping the rest unchanged.  It's
-        discouraged to override this function.  Instead one should override
-        the :meth:`jinja_loader` function instead.
+        """为Jinja2环境创建加载程序. 
+        可以用来仅覆盖加载程序其余的保持不变.  
+        不鼓励重写此功能.  
+        相反，应该覆盖`jinja_loader` 方法函数.
 
-        The global loader dispatches between the loaders of the application
-        and the individual blueprints.
+        全局加载器在应用程序的加载器和各个蓝图之间进行分派.
 
         .. versionadded:: 0.7
         """
         return DispatchingJinjaLoader(self)
 
     def select_jinja_autoescape(self, filename):
-        """Returns ``True`` if autoescaping should be active for the given
-        template name. If no template name is given, returns `True`.
+        """返回 ``True``如果自动转义应该在给定模板名称的情况下处于活动状态
+        . 如果未提供模板名称，则返回`True`.
 
         .. versionadded:: 0.5
         """
@@ -683,15 +673,13 @@ class Flask(Scaffold):
         return filename.endswith((".html", ".htm", ".xml", ".xhtml"))
 
     def update_template_context(self, context):
-        """Update the template context with some commonly used variables.
-        This injects request, session, config and g into the template
-        context as well as everything template context processors want
-        to inject.  Note that the as of Flask 0.6, the original values
-        in the context will not be overridden if a context processor
-        decides to return a value with the same key.
+        """使用一些常用变量更新模板上下文.
+        它会将请求、会话、配置和g注入到模板上下文中，
+        以及所有模板上下文处理器想要注入的内容. 
+        请注意，Flask 0.6版本开始，原始值在上下文中不会被
+        覆盖如果上下文处理器决定返回具有相同键的值.
 
-        :param context: the context as a dictionary that is updated in place
-                        to add extra variables.
+        :param context: 将上下文作为字典，在适当的地方进行更新，以添加额外的变量.
         """
         funcs = self.template_context_processors[None]
         reqctx = _request_ctx_stack.top
@@ -708,9 +696,8 @@ class Flask(Scaffold):
         context.update(orig_ctx)
 
     def make_shell_context(self):
-        """Returns the shell context for an interactive shell for this
-        application.  This runs all the registered shell context
-        processors.
+        """返回此应用程序的交互式shell的shell上下文.
+        这将运行所有注册的shell上下文处理器.  
 
         .. versionadded:: 0.11
         """
@@ -719,26 +706,26 @@ class Flask(Scaffold):
             rv.update(processor())
         return rv
 
-    #: What environment the app is running in. Flask and extensions may
-    #: enable behaviors based on the environment, such as enabling debug
-    #: mode. This maps to the :data:`ENV` config key. This is set by the
-    #: :envvar:`FLASK_ENV` environment variable and may not behave as
-    #: expected if set in code.
+    #: 不论应用程序在什么环境中运行. Flask和拓展们可以启用
+    #: 基于环境的行为, 例如启用调试模式
+    #: 这映射到ENV配置键. This is set by the
+    #: 这是由`FLASK_ENV`环境变量设置
+    #: 如果在代码中设置，可能不会像预期的那样行为.
     #:
-    #: **Do not enable development when deploying in production.**
+    #: **在生产环境中部署时请勿启用开发.**
     #:
     #: Default: ``'production'``
     env = ConfigAttribute("ENV")
 
     @property
     def debug(self):
-        """Whether debug mode is enabled. When using ``flask run`` to start
-        the development server, an interactive debugger will be shown for
-        unhandled exceptions, and the server will be reloaded when code
-        changes. This maps to the :data:`DEBUG` config key. This is
-        enabled when :attr:`env` is ``'development'`` and is overridden
-        by the ``FLASK_DEBUG`` environment variable. It may not behave as
-        expected if set in code.
+        """不论调试模式是否启动.当使用 ``flask run`` 来开启
+        开发服务器,将显示一个交互式调试器，用于未处理的异常, 
+        并在代码加载时重新加载服务器变化. 
+        这映射到：DEBUG`DEBUG`配置键. 
+        当环境变量为``'development'``时启用
+        通过``FLASK_DEBUG``环境变量进行覆盖. 
+        如果在代码中设置，可能不会像预期的那样行为.
 
         **Do not enable debug mode when deploying in production.**
 
