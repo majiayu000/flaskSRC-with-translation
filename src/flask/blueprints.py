@@ -6,53 +6,48 @@ from .scaffold import Scaffold
 
 
 class BlueprintSetupState:
-    """Temporary holder object for registering a blueprint with the
-    application.  An instance of this class is created by the
-    :meth:`~flask.Blueprint.make_setup_state` method and later passed
-    to all register callback functions.
+    """为应用程序注册蓝图的临时存放对象.  
+    这个类的实例是由方法`~flask.Blueprint.make_setup_state` 
+    之后传递给所有的注册回调函数.
     """
 
     def __init__(self, blueprint, app, options, first_registration):
-        #: a reference to the current application
+        #: 对当前应用程序的引用
         self.app = app
 
-        #: a reference to the blueprint that created this setup state.
+        #: 对创建此设置状态的蓝图的引用.
         self.blueprint = blueprint
 
-        #: a dictionary with all options that were passed to the
-        #: :meth:`~flask.Flask.register_blueprint` method.
+        #: 一本包含所有选项的字典
+        #: 传递给`~flask.Flask.register_blueprint`方法.
         self.options = options
 
-        #: as blueprints can be registered multiple times with the
-        #: application and not everything wants to be registered
-        #: multiple times on it, this attribute can be used to figure
-        #: out if the blueprint was registered in the past already.
+        #: 由于蓝图可以在应用程序中注册多次，而且并不是所有的东西都想在上面注册多次，
+        #: 因此可以使用此属性确定蓝图是否已经在过去注册过
         self.first_registration = first_registration
 
         subdomain = self.options.get("subdomain")
         if subdomain is None:
             subdomain = self.blueprint.subdomain
 
-        #: The subdomain that the blueprint should be active for, ``None``
-        #: otherwise.
+        #: 蓝图应处于活动状态的子域
+        #: 否则为None
         self.subdomain = subdomain
 
         url_prefix = self.options.get("url_prefix")
         if url_prefix is None:
             url_prefix = self.blueprint.url_prefix
-        #: The prefix that should be used for all URLs defined on the
-        #: blueprint.
+        #: 蓝图上定义的所有url都应该使用前缀
+        #: 
         self.url_prefix = url_prefix
 
-        #: A dictionary with URL defaults that is added to each and every
-        #: URL that was defined with the blueprint.
+        #: 一个带有URL默认值的字典，它被添加到使用blueprint定义的每个URL中
         self.url_defaults = dict(self.blueprint.url_values_defaults)
         self.url_defaults.update(self.options.get("url_defaults", ()))
 
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
-        """A helper method to register a rule (and optionally a view function)
-        to the application.  The endpoint is automatically prefixed with the
-        blueprint's name.
+        """注册应用程序规则(以及可选的可选视图函数)的辅助程序
+        端点会自动以蓝图名称添加前缀.
         """
         if self.url_prefix is not None:
             if rule:
@@ -75,33 +70,28 @@ class BlueprintSetupState:
 
 
 class Blueprint(Scaffold):
-    """Represents a blueprint, a collection of routes and other
-    app-related functions that can be registered on a real application
-    later.
+    """表示一个蓝图、一组路由和其他与应用程序相关的功能，
+    以后可以在真正的应用程序上注册.
 
-    A blueprint is an object that allows defining application functions
-    without requiring an application object ahead of time. It uses the
-    same decorators as :class:`~flask.Flask`, but defers the need for an
-    application by recording them for later registration.
+    蓝图是一个对象，它允许定义应用程序函数，而不需要提前定义应用程序对象。
+    它使用的装饰器与`~flask.Flask`相同。弗拉斯克'，但通过记录它们以便日后登记，推迟了申请的需要。.
 
-    Decorating a function with a blueprint creates a deferred function
-    that is called with :class:`~flask.blueprints.BlueprintSetupState`
-    when the blueprint is registered on an application.
+    当蓝图在应用程序上注册时
+    用蓝图装饰功能创建一个延迟函数
+    被称为`~flask.blueprints.BlueprintSetupState`
+    .
 
-    See :doc:`/blueprints` for more information.
+    参考 :doc:`/blueprints`了解更多信息.
 
     .. versionchanged:: 1.1.0
-        Blueprints have a ``cli`` group to register nested CLI commands.
-        The ``cli_group`` parameter controls the name of the group under
-        the ``flask`` command.
+        蓝图有一个``cli``组来注册嵌套的CLI命令.
+        ``cli_group``参数控制``flask``命令下的组名.
 
     .. versionadded:: 0.7
 
-    :param name: The name of the blueprint. Will be prepended to each
-        endpoint name.
-    :param import_name: The name of the blueprint package, usually
-        ``__name__``. This helps locate the ``root_path`` for the
-        blueprint.
+    :param name: 蓝图名. 将被附加到每个端点.
+    :param import_name: 蓝图包的名称, 通常为``__name__``.
+        有助于找到蓝图的 ``root_path``.
     :param static_folder: A folder with static files that should be
         served by the blueprint's static route. The path is relative to
         the blueprint's root path. Blueprint static files are disabled
